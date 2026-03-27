@@ -23,6 +23,15 @@ from testplan.report.testing.styles import StyleFlag
 from testplan.testing import tagging
 
 from . import constants as const
+
+# Import the actual RowData class for use in type annotations.  The RowData
+# re-exported by .base is ``functools.partial(_RowData, num_columns=NUM_COLUMNS)``
+# — a *callable* that produces _RowData instances with a baked-in column count.
+# Because functools.partial is not a class, mypy rejects it in positions that
+# expect a type (return annotations, variable annotations, Optional[...], etc.).
+# At runtime we still call the partial ``RowData(...)`` to construct rows; only
+# the *annotations* use the underlying class.
+from testplan.common.exporters.pdf import RowData as _RowData
 from .base import BaseRowRenderer, MetadataMixin, RowData, format_duration
 
 

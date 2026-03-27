@@ -21,8 +21,8 @@ T_co = TypeVar("T_co", covariant=True)
 U = TypeVar("U")
 
 
-class Functor(Protocol, Generic[T_co]):
-    def map(self, f: Callable[[Any], Any]) -> Self:
+class Functor(Protocol, Generic[T]):  # type: ignore[misc]
+    def map(self, f: Callable[[T], U]) -> Self:
         # map :: f t -> (t -> u) -> f u
         ...
 
@@ -97,9 +97,8 @@ def eval_on_set(s: Set[Any]) -> Callable[[Any], Any]:
     return _
 
 
-def apply_on_set(rep: Any, s: Set[Any]) -> Set[Any]:
-    result: Set[Any] = cata(eval_on_set(s), rep)
-    return result
+def apply_on_set(rep: Expr, s: Set) -> Set:
+    return cata(eval_on_set(s), rep)  # type: ignore[no-any-return]
 
 
 def apply_single(rep: Any, i: Any) -> bool:
@@ -116,5 +115,4 @@ def apply_single(rep: Any, i: Any) -> bool:
             return not x.term
         raise TypeError(f"unexpected {x}")
 
-    result: bool = cata(_, rep)
-    return result
+    return cata(_, rep)  # type: ignore[no-any-return]
